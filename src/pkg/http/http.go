@@ -64,10 +64,14 @@ type HttpResponse struct {
 	StatusCode int
 	Message    string
 	Headers    map[string]string
+	Cookies    []string
 	Body       []byte
 }
 
 func (response *HttpResponse) SetCookie(name string, value string, options map[string]string, maxAge int /*seconds*/, sameSite string /*Strict Lax None*/, secure bool, httpOnly bool, priority string /*Low Medium High*/, domain string, path string) {
+	if response.Cookies == nil {
+		response.Cookies = make([]string, 0)
+	}
 	var cookiestring = fmt.Sprintf("%s=%s;", name, value)
 	if val, ok := options["max-age"]; ok {
 		cookiestring += fmt.Sprintf(" Max-Age=%s;", val)
@@ -90,7 +94,7 @@ func (response *HttpResponse) SetCookie(name string, value string, options map[s
 	if val, ok := options["priority"]; ok {
 		cookiestring += fmt.Sprintf(" Priority=%s;", val)
 	}
-	response.Headers["Set-Cookie"] = cookiestring
+	response.Cookies = append(response.Cookies, cookiestring)
 }
 
 func ParseHttpRequest(reader *bufio.Reader) *HttpRequest {
