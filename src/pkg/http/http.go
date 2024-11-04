@@ -67,6 +67,32 @@ type HttpResponse struct {
 	Body       []byte
 }
 
+func (response *HttpResponse) SetCookie(name string, value string, options map[string]string, maxAge int /*seconds*/, sameSite string /*Strict Lax None*/, secure bool, httpOnly bool, priority string /*Low Medium High*/, domain string, path string) {
+	var cookiestring = fmt.Sprintf("%s=%s;", name, value)
+	if val, ok := options["max-age"]; ok {
+		cookiestring += fmt.Sprintf(" Max-Age=%s;", val)
+	}
+	if val, ok := options["domain"]; ok {
+		cookiestring += fmt.Sprintf(" Domain=%s;", val)
+	}
+	if val, ok := options["path"]; ok {
+		cookiestring += fmt.Sprintf(" Path=%s;", val)
+	}
+	if _, ok := options["secure"]; ok {
+		cookiestring += " Secure;"
+	}
+	if _, ok := options["http-only"]; ok {
+		cookiestring += " HttpOnly;"
+	}
+	if val, ok := options["same-site"]; ok {
+		cookiestring += fmt.Sprintf(" SameSite=%s;", val)
+	}
+	if val, ok := options["priority"]; ok {
+		cookiestring += fmt.Sprintf(" Priority=%s;", val)
+	}
+	response.Headers["Set-Cookie"] = cookiestring
+}
+
 func ParseHttpRequest(reader *bufio.Reader) *HttpRequest {
 	line, err := reader.ReadString('\n')
 
