@@ -9,7 +9,7 @@ import (
 type HttpRequest struct {
 	Method  string
 	Path    string
-	Verion  string
+	Version string
 	Headers map[string]string
 	Body    []byte
 }
@@ -17,13 +17,13 @@ type HttpRequest struct {
 func (request *HttpRequest) Print(withBody bool) {
 	fmt.Printf("Method: %s\n", request.Method)
 	fmt.Printf("Path: %s\n", request.Path)
-	fmt.Printf("Version: %s\n", request.Verion)
+	fmt.Printf("Version: %s\n", request.Version)
 	fmt.Printf("Headers:\n")
 	for key, value := range request.Headers {
 		fmt.Printf("  %s: %s\n", key, value)
 	}
 	if withBody {
-		fmt.Printf("Body: %s\n", string(request.Body))
+		fmt.Printf("Body: %s\n---------------------------------------------------\n", string(request.Body))
 	}
 }
 
@@ -60,15 +60,16 @@ func (request *HttpRequest) GetQueryParams() map[string]string {
 }
 
 type HttpResponse struct {
-	Version    string
-	StatusCode int
-	Message    string
-	Headers    map[string]string
-	Cookies    []string
-	Body       []byte
+	Version     string
+	StatusCode  int
+	Message     string
+	Headers     map[string]string
+	Cookies     []string
+	ContentType string
+	Body        []byte
 }
 
-func (response *HttpResponse) SetCookie(name string, value string, options map[string]string, maxAge int /*seconds*/, sameSite string /*Strict Lax None*/, secure bool, httpOnly bool, priority string /*Low Medium High*/, domain string, path string) {
+func (response *HttpResponse) SetCookie(name string, value string, options map[string]string) {
 	if response.Cookies == nil {
 		response.Cookies = make([]string, 0)
 	}
@@ -97,6 +98,28 @@ func (response *HttpResponse) SetCookie(name string, value string, options map[s
 	response.Cookies = append(response.Cookies, cookiestring)
 }
 
+func (response *HttpResponse) BuildResponseHeader() string {
+	var responseString = fmt.Sprintf("%s %d %s\n", response.Version, response.StatusCode, response.Message)
+
+	if response.Headers != nil {
+		for key, value := range response.Headers {
+			responseString += fmt.Sprintf("%s: %s\n", key, value)
+		}
+	}
+
+	if response.Cookies != nil {
+		for _, cookie := range response.Cookies {
+			responseString += fmt.Sprintf("Set-Cookie: %s\n", cookie)
+		}
+	}
+
+	if response.Body != nil {
+		responseString += fmt.Sprintf("Content-Type: %s\nContent-Length: %d\n\n", response.ContentType, len(response.Body))
+	}
+
+	return responseString
+}
+
 func ParseHttpRequest(reader *bufio.Reader) *HttpRequest {
 	line, err := reader.ReadString('\n')
 
@@ -109,7 +132,7 @@ func ParseHttpRequest(reader *bufio.Reader) *HttpRequest {
 	request := new(HttpRequest)
 	request.Method = params[0]
 	request.Path = params[1]
-	request.Verion = params[2]
+	request.Version = params[2]
 
 	headers := make(map[string]string)
 	for {

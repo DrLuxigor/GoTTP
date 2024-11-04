@@ -46,5 +46,21 @@ func handleConnection(conn net.Conn) {
 	request := http.ParseHttpRequest(reader)
 	request.Print(false)
 
-	conn.Write([]byte("HTTP/1.1 200 OK\nServer: GoTTP\nContent-Type: text/html\nContent-Lenght: 21\n\n<h1>Hello World</h1>\n"))
+	response := http.HttpResponse{
+		Version:     request.Version,
+		StatusCode:  200,
+		Message:     "OK",
+		Headers:     make(map[string]string),
+		Cookies:     make([]string, 0),
+		ContentType: "text/html",
+		Body:        []byte("<h1>Hello World</h1>"),
+	}
+
+	response.Headers["Server"] = "GoTTP"
+	response.SetCookie("testcookie", "testvalue", map[string]string{"path": "/", "max-age": "3600", "same-site": "Lax", "priority": "High", "http-only": "true", "secure": "true"})
+
+	conn.Write([]byte(response.BuildResponseHeader()))
+	if response.Body != nil {
+		conn.Write(response.Body)
+	}
 }
