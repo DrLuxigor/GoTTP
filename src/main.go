@@ -3,15 +3,16 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 
 	"lukaskofler.dev/gottp/src/pkg/http"
 )
 
 var (
-	port           = 8050
-	maxRequestSize = 1 << 24
-	version        = "0.0.1"
+	port                 = 8050
+	maxRequestSize int64 = 1 << 24
+	version              = "0.0.1"
 )
 
 func main() {
@@ -39,7 +40,8 @@ func main() {
 func handleConnection(conn net.Conn) {
 	defer conn.Close()
 
-	reader := bufio.NewReader(conn)
+	limitreader := io.LimitReader(conn, maxRequestSize)
+	reader := bufio.NewReader(limitreader)
 
 	request := http.ParseHttpRequest(reader)
 	request.Print(false)
