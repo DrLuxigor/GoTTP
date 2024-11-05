@@ -36,3 +36,7 @@ func GetContentType(fileExtension string) string {
 	}
 	return "application/octet-stream"
 }
+
+func SetFileExtensionContentType(fileExtension string, contentType string) {
+	contentTypes[fileExtension] = contentType
+}

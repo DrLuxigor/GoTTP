@@ -58,8 +58,13 @@ request.GetQueryParameters()
 ## Static files
 
 Static files can be served from a folder named "static" in the project root folder.
-If the path is recognized as a file, the file will be served if present, otherwise the server will redirect to /404.html.
-If static/404.html doesn't exist it, the server will respond with a 404 error.
+If the path is recognized as a file, the file will be served if present, if the file can;t be found the server will redirect to /404.html.
+If the file static/404.html doesn't exist it, the server will respond with a 404 error.
+
+You can associate missing file extensions with a content type:
+```
+gottp.SetFileExtensionContentType(".dubious", "text/plain")
+```
 
 Normal paths will be handled by the functions the user defines, if a path is not found, the server will redirect to /404.html.
 
