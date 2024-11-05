@@ -19,7 +19,6 @@ type GoTTPServer struct {
 	Gets           map[string]GoTTPFunc
 	Posts          map[string]GoTTPFunc
 	Puts           map[string]GoTTPFunc
-	Updates        map[string]GoTTPFunc
 	Deletes        map[string]GoTTPFunc
 }
 
@@ -30,7 +29,6 @@ func CreateApp() *GoTTPServer {
 	app.Gets = make(map[string]GoTTPFunc)
 	app.Posts = make(map[string]GoTTPFunc)
 	app.Puts = make(map[string]GoTTPFunc)
-	app.Updates = make(map[string]GoTTPFunc)
 	app.Deletes = make(map[string]GoTTPFunc)
 	return app
 }
@@ -141,8 +139,8 @@ func findFunc(method string, path string, app *GoTTPServer) GoTTPFunc {
 		return app.Gets[path]
 	case "PUT":
 		return app.Puts[path]
-	case "UPDATE":
-		return app.Updates[path]
+	case "POST":
+		return app.Posts[path]
 	case "DELETE":
 		return app.Deletes[path]
 	}
@@ -159,10 +157,6 @@ func (s *GoTTPServer) Post(path string, f GoTTPFunc) {
 
 func (s *GoTTPServer) Put(path string, f GoTTPFunc) {
 	s.Puts[path] = f
-}
-
-func (s *GoTTPServer) Update(path string, f GoTTPFunc) {
-	s.Updates[path] = f
 }
 
 func (s *GoTTPServer) Delete(path string, f GoTTPFunc) {

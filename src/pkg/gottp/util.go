@@ -1,65 +1,38 @@
 package gottp
 
-import (
-	"strings"
-)
+var contentTypes = map[string]string{
+	".html":  "text/html",
+	".css":   "text/css",
+	".js":    "text/javascript",
+	".json":  "application/json",
+	".png":   "image/png",
+	".jpg":   "image/jpeg",
+	".jpeg":  "image/jpeg",
+	".gif":   "image/gif",
+	".webp":  "image/webp",
+	".tiff":  "image/tiff",
+	".ico":   "image/x-icon",
+	".svg":   "image/svg+xml",
+	".aac":   "audio/aac",
+	".mp3":   "audio/mpeg",
+	".wav":   "audio/wav",
+	".mp4":   "video/mp4",
+	".webm":  "video/webm",
+	".csv":   "text/csv",
+	".htm":   "text/html",
+	".pdf":   "application/pdf",
+	".7z":    "application/x-7z-compressed",
+	".zip":   "application/zip",
+	".xml":   "application/xml",
+	".ttf":   "font/ttf",
+	".otf":   "font/otf",
+	".woff":  "font/woff",
+	".woff2": "font/woff2",
+}
 
 func GetContentType(fileExtension string) string {
-	switch strings.ToLower(fileExtension) {
-	case ".html":
-		return "text/html"
-	case ".css":
-		return "text/css"
-	case ".js":
-		return "text/javascript"
-	case ".json":
-		return "application/json"
-	case ".png":
-		return "image/png"
-	case ".jpg":
-		return "image/jpeg"
-	case ".jpeg":
-		return "image/jpeg"
-	case ".gif":
-		return "image/gif"
-	case ".webp":
-		return "image/webp"
-	case ".tiff":
-		return "image/tiff"
-	case ".ico":
-		return "image/x-icon"
-	case ".svg":
-		return "image/svg+xml"
-	case ".aac":
-		return "audio/aac"
-	case ".mp3":
-		return "audio/mpeg"
-	case ".wav":
-		return "audio/wav"
-	case ".mp4":
-		return "video/mp4"
-	case ".webm":
-		return "video/webm"
-	case ".csv":
-		return "text/csv"
-	case ".htm":
-		return "text/html"
-	case ".pdf":
-		return "application/pdf"
-	case ".7z":
-		return "application/x-7z-compressed"
-	case ".zip":
-		return "application/zip"
-	case ".xml":
-		return "application/xml"
-	case ".ttf":
-		return "font/ttf"
-	case ".otf":
-		return "font/otf"
-	case ".woff":
-		return "font/woff"
-	case ".woff2":
-		return "font/woff2"
+	if val, ok := contentTypes[fileExtension]; ok {
+		return val
 	}
-	return "text/plain"
+	return "application/octet-stream"
 }
