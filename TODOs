@@ -1,0 +1,14 @@
+ ## TODOS
+ - ssl/tsl
+ - caching
+ - read into connection keep alive
+ - read into http versions
+ - make code comply with RFC7540 http/2 standard and 1.1 standard for 1.1 requests.
+ - https://datatracker.ietf.org/doc/html/rfc7540
+ - maybe http/3 aswell
+
+ ## Probably not
+- own file format for integrating go code into html .gotml
+- automatic routing for those pages
+
+
