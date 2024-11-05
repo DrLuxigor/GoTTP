@@ -35,6 +35,7 @@ Headers can be read and set
 ```
 val, err := request.Headers["Host"]
 response.Headers["Content-Type"] = "text/plain"
+//this one could also be done with response.ContentType = "text/plain"
 ```
 
 ## Cookies
@@ -53,4 +54,12 @@ The query parameters of a request can be read
 ```
 request.GetQueryParameters()
 ```
+
+## Static files
+
+Static files can be served from a folder named "static" in the project root folder.
+If the path is recognized as a file, the file will be served if present, otherwise the server will redirect to /404.html.
+If static/404.html doesn't exist it, the server will respond with a 404 error.
+
+Normal paths will be handled by the functions the user defines, if a path is not found, the server will redirect to /404.html.
 
